@@ -180,7 +180,11 @@ class PaceHandler(SimpleHTTPRequestHandler):
         path = urlparse(self.path).path
         if path == "/healthz":
             return self.respond_json({"ok": True})
-        if not self.authorize():
+        # The product page is intentionally public. Everything that reveals
+        # a person's workspace, connected tools, or calendar remains behind
+        # the private access link.
+        public_page = path in {"/", "/landing.css"}
+        if not public_page and not self.authorize():
             return
         if path == "/api/state":
             return self.respond_json(state())
