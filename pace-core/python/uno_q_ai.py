@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import threading
 from typing import Any
 
 DEFAULT_MODEL = "llamacpp:gemma-3-1b-it-Q4_0"
@@ -11,18 +12,30 @@ duration_minutes is an integer from 15 to 240. target_date is YYYY-MM-DD or null
 Use the supplied current time and calendar. Do not schedule, modify, or claim to create an event."""
 
 
-def plan(text: str, now: str, commitments: list[dict], issues: list[dict]) -> dict[str, Any]:
-    from arduino.app_bricks.llm import LargeLanguageModel
+_planner: Any | None = None
+_planner_lock = threading.Lock()
 
-    preferred = os.environ.get("PACE_LLM_MODEL", DEFAULT_MODEL)
-    available = [str(item) for item in LargeLanguageModel().list_models() or []]
-    # list_models() reports the short runner name (for example
-    # ``gemma-3-1b-it-Q4_0``), while the brick constructor needs the configured
-    # provider-qualified ID (``llamacpp:gemma-3-1b-it-Q4_0``).
-    model_id = preferred
-    if not available:
-        raise RuntimeError("No Uno Q local model is available. Install the Pace model from app.yaml first.")
-    model = LargeLanguageModel(model=model_id, system_prompt=SYSTEM, temperature=0.0, max_tokens=220)
+
+def _get_planner() -> Any:
+    """Create the local model once, then keep it warm between Pace requests."""
+    global _planner
+    if _planner is None:
+        with _planner_lock:
+            if _planner is None:
+                from arduino.app_bricks.llm import LargeLanguageModel
+
+                model_id = os.environ.get("PACE_LLM_MODEL", DEFAULT_MODEL)
+                _planner = LargeLanguageModel(
+                    model=model_id,
+                    system_prompt=SYSTEM,
+                    temperature=0.0,
+                    max_tokens=220,
+                )
+    return _planner
+
+
+def plan(text: str, now: str, commitments: list[dict], issues: list[dict]) -> dict[str, Any]:
+    model = _get_planner()
     raw = model.chat(json.dumps({"request": text, "now": now, "commitments": commitments, "available_issues": issues}, ensure_ascii=False) + "\nJSON:")
     try:
         answer = json.loads(str(raw)[str(raw).find("{") : str(raw).rfind("}") + 1])

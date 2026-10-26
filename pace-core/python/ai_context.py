@@ -93,7 +93,9 @@ def plan_task(text: str, now: str, commitments: list[dict], issues: list[dict]) 
         request = urllib.request.Request(str(config["base_url"]) + "/api/ai/plan?" + params, method="POST")
         try:
             context = ssl.create_default_context(cafile=certifi.where())
-            with urllib.request.urlopen(request, timeout=60, context=context) as response:
+            # The first local request can include model loading on constrained
+            # hardware such as Uno Q. Later requests reuse the warm model.
+            with urllib.request.urlopen(request, timeout=180, context=context) as response:
                 result = json.loads(response.read().decode("utf-8"))
             if not result.get("ok"):
                 raise RuntimeError(str(result.get("error") or "Uno Q could not plan this task."))
