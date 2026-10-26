@@ -7,9 +7,9 @@ import threading
 from typing import Any
 
 DEFAULT_MODEL = "llamacpp:gemma-3-1b-it-Q4_0"
-SYSTEM = """Turn the user's task request into JSON only. Keys: title, duration_minutes, target_date, preferred_period, rationale.
+SYSTEM = """Return one compact JSON object only. Keys: title, duration_minutes, target_date, preferred_period, rationale.
 duration_minutes is an integer from 15 to 240. target_date is YYYY-MM-DD or null. preferred_period is morning, afternoon, evening, or anytime.
-Use the supplied current time and calendar. Do not schedule, modify, or claim to create an event."""
+Keep title under 8 words and rationale under 12 words. Use no markdown or text outside JSON."""
 
 
 _planner: Any | None = None
@@ -29,7 +29,7 @@ def _get_planner() -> Any:
                     model=model_id,
                     system_prompt=SYSTEM,
                     temperature=0.0,
-                    max_tokens=220,
+                    max_tokens=100,
                 )
     return _planner
 
