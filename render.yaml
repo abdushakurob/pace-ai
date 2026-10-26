@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: pace-hub
+    runtime: docker
+    plan: 0.5c-512mb
+    healthCheckPath: /healthz
+    disk:
+      name: pace-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: PACE_HOST
+        value: 0.0.0.0
+      - key: PACE_PORT
+        value: "10000"
+      - key: PACE_DB
+        value: /app/data/pace.db
+      - key: PACE_ACCESS_TOKEN
+        generateValue: true
+      - key: PACE_SHARE_URL
+        sync: false
+      - key: PACE_OAUTH_CALLBACK_BASE
+        sync: false
+      - key: PACE_GOOGLE_CLIENT_ID
+        sync: false
+      - key: PACE_GOOGLE_CLIENT_SECRET
+        sync: false

@@ -1,0 +1,3 @@
+id: calendar-mcp
+name: Pace Calendar MCP
+description: Calendar tools for Pace. Point Pace at another MCP server when a provider calendar should be the source.

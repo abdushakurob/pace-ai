@@ -1,0 +1,8 @@
+__pycache__/
+.venv/
+*.db
+.pace-write
+companion/paused
+companion/pace.token
+models/*.gguf
+pace-core/bricks/calendar-mcp/__pycache__/

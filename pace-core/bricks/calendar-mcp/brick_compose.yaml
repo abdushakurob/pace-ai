@@ -1,0 +1,12 @@
+services:
+  calendar-mcp:
+    build: .
+    environment:
+      - CALENDAR_PATH=/data/calendar.json
+    volumes:
+      - /home/arduino/pace/calendar:/data
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import socket; socket.create_connection(('localhost', 8080), 2)\""]
+      interval: 2s
+      timeout: 3s
+      retries: 30

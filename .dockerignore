@@ -1,0 +1,9 @@
+.git/
+.venv/
+__pycache__/
+*.py[cod]
+*.db
+.pace-write
+companion/paused
+companion/pace.token
+models/*.gguf

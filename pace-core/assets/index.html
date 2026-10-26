@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#153e36" />
+    <title>Pace — Workday coordination</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="Pace landing page"><span class="brand-mark">P</span><span>Pace</span></a>
+        <p class="workspace-name">Personal workspace</p>
+        <nav class="nav" aria-label="Main navigation">
+  <button class="nav-item active" data-view="today"><i data-lucide="calendar-days" aria-hidden="true"></i><span>Today</span></button>
+  <button class="nav-item" data-view="connections"><i data-lucide="plug-zap" aria-hidden="true"></i><span>Connections</span></button>
+  <button class="nav-item" data-view="devices"><i data-lucide="smartphone" aria-hidden="true"></i><span>Devices</span></button>
+  <button class="nav-item" data-view="settings"><i data-lucide="sliders-horizontal" aria-hidden="true"></i><span>Settings</span></button>
+  <button class="nav-item" data-view="privacy"><i data-lucide="shield-check" aria-hidden="true"></i><span>Privacy</span></button>
+</nav>
+        <div class="sidebar-bottom">
+          <div class="observer-state"><span class="status-dot"></span><div><strong id="observer-title">Observer ready</strong><small id="observer-detail">This computer can share context</small></div></div>
+          <button class="pause-button" id="pause-observer">Pause observation</button>
+        </div>
+      </aside>
+      <main class="main-content">
+        <section class="view active" id="today-view">
+          <header class="page-header">
+            <div><p class="eyebrow" id="date-label">Your workday</p><h1 id="greeting">Start with what needs to happen.</h1></div>
+            <div class="header-actions"><button class="quiet-button" id="enable-alerts">Enable alerts</button></div>
+          </header>
+          <section class="focus-card" aria-labelledby="focus-heading">
+            <div class="focus-head"><div><p class="eyebrow">Your focus now</p><h2 id="focus-heading">Calendar sync endpoint</h2></div><span class="on-track" id="focus-state">On track</span></div>
+            <p class="focus-description" id="focus-description">Pace has enough evidence that this is the work you planned for this block.</p>
+            <div class="focus-meta"><span id="focus-time">No focus block yet</span><span class="dot-separator">·</span><span id="focus-source">Pace plan</span><span class="dot-separator">·</span><span id="focus-remaining">Start with your calendar</span></div>
+            <div class="evidence" aria-label="Context evidence"><span class="evidence-label">Context</span><span id="evidence-one">No desktop context yet</span><span id="evidence-two">Pace only uses context you enable</span></div>
+          </section>
+          <section class="suggestion-card" hidden>
+            <div class="suggestion-icon"><i data-lucide="sparkles" aria-hidden="true"></i></div>
+            <div class="suggestion-copy"><p class="eyebrow">Pace suggestion</p><h2></h2><p></p></div>
+            <div class="suggestion-actions"><button class="secondary-action" id="keep-plan">Keep plan</button><button class="primary-action" id="apply-suggestion">Use this plan</button></div>
+          </section>
+          <section class="day-section" aria-labelledby="timeline-heading">
+            <div class="section-heading"><div><p class="eyebrow">The day</p><h2 id="timeline-heading">A plan that can move with you</h2></div><button class="quiet-button" id="add-block">+ Tell Pace</button></div>
+            <ol class="timeline" id="timeline"></ol>
+          </section>
+        </section>
+        <section class="view" id="connections-view">
+          <header class="page-header"><div><p class="eyebrow">Connections</p><h1>Bring your work into one calm view.</h1><p class="page-intro">Pace reads your tools to understand the day. Every connection has its own permissions.</p></div></header>
+          <div class="connection-grid">
+  <article class="connection-card"><div class="connection-logo google"><i data-lucide="calendar-days" aria-hidden="true"></i></div><div><h2>Google Calendar</h2><p>Meetings, commitments, and approved focus blocks.</p></div><button class="primary-action connect-google">Connect</button><button class="secondary-action sync-google" hidden>Sync calendar</button></article>
+  <article class="connection-card"><div class="connection-logo linear"><i data-lucide="layers-3" aria-hidden="true"></i></div><div><h2>Linear</h2><p>Assigned issues, project context, and due dates.</p></div><button class="primary-action">Connect</button></article>
+  <article class="connection-card"><div class="connection-logo github"><i data-lucide="github" aria-hidden="true"></i></div><div><h2>GitHub</h2><p>Pull requests, reviews, and work in progress.</p></div><button class="primary-action">Connect</button></article>
+  <article class="connection-card mcp-card"><div class="connection-logo"><i data-lucide="blocks" aria-hidden="true"></i></div><div><h2>Custom MCP</h2><p>Connect a self-hosted or specialist tool.</p></div><button class="secondary-action">Add MCP</button></article>
+</div>
+        </section>
+        <section class="view narrow-view" id="devices-view">
+          <header class="page-header"><div><p class="eyebrow">Devices</p><h1>Your plan, wherever you need it.</h1><p class="page-intro">The Pace Hub stays on your trusted network. Your phone becomes a private control surface.</p></div></header>
+          <article class="device-card"><div class="device-icon"><i data-lucide="monitor" aria-hidden="true"></i></div><div><h2>This computer</h2><p>Hub and observer · available</p></div><span class="connected-label">Connected</span></article>
+          <article class="phone-card"><div><p class="eyebrow">Phone companion</p><h2>Open Pace on your phone</h2><p>Scan this code or use the link from a phone on the same Wi-Fi to see your live plan and approve suggestions.</p><a class="share-link" id="share-link" href="#"></a><button class="primary-action" id="copy-share-link" type="button">Copy link</button></div><img class="pairing-qr" id="pairing-qr" alt="QR code for this Pace workspace" /></article>
+        </section>
+        <section class="view narrow-view" id="settings-view">
+          <header class="page-header"><div><p class="eyebrow">Settings</p><h1>Choose Pace's planning model.</h1><p class="page-intro">Use the local model on an Uno Q, an OpenAI-compatible local server, or a hosted compatible provider.</p></div></header>
+          <form class="settings-card" id="ai-settings-form">
+            <label>AI mode<select id="ai-mode"><option value="uno-q">Arduino Uno Q local model</option><option value="openai-compatible">OpenAI-compatible</option><option value="off">Off</option></select></label>
+            <label>Base URL<input id="ai-base-url" type="url" placeholder="Uno Q Pace app URL, or http://localhost:8080/v1" /></label>
+            <label>Model <span class="muted">Uno Q uses its installed Gemma model</span><input id="ai-model" type="text" placeholder="your-instruct-model" /></label>
+            <label>Access key <span class="muted">Required for Uno Q; optional for many local servers</span><input id="ai-api-key" type="password" autocomplete="off" placeholder="Stored locally on this Pace Hub" /></label>
+            <p class="form-error" id="ai-settings-error" role="status"></p>
+            <button class="primary-action" type="submit">Save AI settings</button>
+          </form>
+        </section>
+        <section class="view narrow-view" id="privacy-view">
+          <header class="page-header"><div><p class="eyebrow">Privacy</p><h1>You decide what Pace can see.</h1><p class="page-intro">Pace coordinates your day with the smallest amount of context needed.</p></div></header>
+          <div class="privacy-list">
+            <article><div><h2>App and window context</h2><p>Use the active app and window title to understand what you are working on.</p></div><label class="switch"><input type="checkbox" checked /><span></span></label></article>
+            <article><div><h2>Local screen understanding</h2><p>Optional screenshots are processed locally, turned into text context, then deleted.</p></div><label class="switch"><input type="checkbox" /><span></span></label></article>
+            <article><div><h2>Hosted AI processing</h2><p>Off by default. Enable only when you choose a remote model in AI settings.</p></div><span class="off-label">Off</span></article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <aside class="attention-card" id="attention-card" hidden aria-live="assertive">
+      <p class="eyebrow">Pace check-in</p><h2 id="attention-title">Your next commitment is coming up.</h2><p id="attention-detail"></p>
+      <div class="attention-actions"><button class="secondary-action" id="attention-snooze">Snooze 10 min</button><button class="secondary-action" id="attention-prepare">Prepare now</button><button class="primary-action" id="attention-continue">Continue to stop time</button></div>
+    </aside>
+    <dialog class="focus-dialog" id="focus-dialog" aria-labelledby="focus-dialog-title">
+      <form method="dialog" id="focus-form">
+        <div class="dialog-heading"><div><p class="eyebrow">Pace plan</p><h2 id="focus-dialog-title">Add a focus block</h2></div><button class="close-dialog" value="cancel" aria-label="Close">×</button></div>
+        <p>Tell Pace what needs to happen. It finds an open slot around your commitments and asks before changing your calendar.</p>
+        <label>What needs to happen?<textarea id="capture-text" required placeholder="Block 90 minutes to finish the calendar sync endpoint"></textarea></label>
+        <p class="form-error" id="focus-error" role="status"></p>
+        <div class="dialog-actions"><button class="secondary-action" value="cancel">Cancel</button><button class="primary-action" value="default">Find a time</button></div>
+      </form>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/lucide.min.js"></script>
+    <script>lucide.createIcons({ attrs: { "stroke-width": 1.8 } });</script>
+    <script src="/app.js"></script>
+  </body>
+</html>

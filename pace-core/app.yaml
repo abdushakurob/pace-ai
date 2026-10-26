@@ -1,0 +1,7 @@
+name: Pace
+description: Pace's private Uno Q AI bridge. A local Gemma model turns requests into safe planning intent.
+icon: "⏰"
+bricks:
+  - arduino:web_ui
+  - arduino:llm:
+      model: "llamacpp:gemma-3-1b-it-Q4_0"
