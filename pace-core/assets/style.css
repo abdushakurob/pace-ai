@@ -35,3 +35,6 @@
 .connection-logo svg,.suggestion-icon svg,.device-icon svg { width:20px; height:20px; stroke-width:1.8; }
 .connection-card .sync-google { grid-column:3; grid-row:1; white-space:nowrap; }
 @media (min-width:701px) { .app-shell { display:grid; grid-template-columns:238px minmax(0,1fr); }.sidebar { position:sticky; top:0; min-height:100vh; height:100vh; padding:28px 18px; border-right:1px solid var(--line); border-bottom:0; flex-direction:column; align-items:stretch; background:var(--sidebar); backdrop-filter:none; }.workspace-name,.sidebar-bottom { display:block; }.nav { display:grid; margin:0; gap:4px; }.nav-item { width:100%; justify-content:flex-start; }.nav-item span { font-size:inherit; }.main-content { padding-top:58px; } }
+
+/* Planning request feedback */
+.focus-dialog.is-loading textarea,.focus-dialog.is-loading .close-dialog,.focus-dialog.is-loading .secondary-action{opacity:.58}.focus-dialog .primary-action:disabled{cursor:wait;opacity:.82}.focus-dialog.is-loading .form-error{color:var(--muted)}

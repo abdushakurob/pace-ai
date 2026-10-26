@@ -143,12 +143,29 @@ document.querySelector("#focus-form").addEventListener("submit", async (event) =
   event.preventDefault();
   if (event.submitter?.value === "cancel") { focusDialog.close(); return; }
   if (exampleMode) return showToast("Exit preview mode by refreshing Pace, then add a real focus block.");
-  const response = await fetch("/api/capture", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: document.querySelector("#capture-text").value.trim() }) });
-  const result = await response.json();
-  if (!result.ok) { document.querySelector("#focus-error").textContent = result.error || "Pace could not add that block."; return; }
-  focusDialog.close();
-  showToast(`Pace found a ${formatTime(result.proposal.start)} slot. Review the proposal before it is added.`);
-  load();
+  const button = document.querySelector("#focus-form .primary-action");
+  const error = document.querySelector("#focus-error");
+  const originalLabel = button.textContent;
+  button.disabled = true;
+  button.textContent = "Finding a time…";
+  button.setAttribute("aria-busy", "true");
+  focusDialog.classList.add("is-loading");
+  error.textContent = "Pace is checking your calendar and planning an opening…";
+  try {
+    const response = await fetch("/api/capture", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: document.querySelector("#capture-text").value.trim() }) });
+    const result = await response.json();
+    if (!result.ok) { error.textContent = result.error || "Pace could not find a time."; return; }
+    focusDialog.close();
+    showToast(`Pace found a ${formatTime(result.proposal.start)} slot. Review the proposal before it is added.`);
+    load();
+  } catch (_error) {
+    error.textContent = "Pace could not reach the planning service. Try again.";
+  } finally {
+    button.disabled = false;
+    button.textContent = originalLabel;
+    button.removeAttribute("aria-busy");
+    focusDialog.classList.remove("is-loading");
+  }
 });
 document.querySelector("#pause-observer").addEventListener("click", () => showToast("Use the Pace desktop observer to pause local context collection."));
 document.querySelectorAll(".connection-card button").forEach((button) => button.addEventListener("click", () => {
